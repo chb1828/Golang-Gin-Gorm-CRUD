@@ -10,6 +10,7 @@ import (
 type UserController interface {
 	AddUser(*gin.Context)
 	RemoveUser(ctx *gin.Context)
+	Select(ctx *gin.Context)
 }
 
 type userController struct {
@@ -54,5 +55,13 @@ func (u userController) RemoveUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK,gin.H{})
+}
 
+func (u userController) Select(ctx *gin.Context) {
+	id := ctx.Param("id")
+	if id=="" {
+		return
+	}
+	user := u.userService.Select(id)
+	ctx.JSON(http.StatusOK,gin.H{"data":user})
 }

@@ -37,6 +37,10 @@ func InitRoutes(server *gin.Engine) {
 			userController.RemoveUser(ctx)
 		})
 
+		apiRoutes.GET("/user/:id", func(ctx *gin.Context) {
+			userController.Select(ctx)
+		})
+
 	}
 }
 

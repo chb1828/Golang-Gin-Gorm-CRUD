@@ -28,7 +28,7 @@ func Logger() gin.HandlerFunc {
 	LOGFilEName := "logs"
 	// 로그를 기록한다
 	if _, err := os.Stat(LOGFilEName); os.IsNotExist(err) {
-		err := os.Mkdir("log",0755)
+		err := os.Mkdir(LOGFilEName,0755)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -9,6 +9,7 @@ import (
 type UserService interface {
 	Save(user dtos.UserDTO) (dtos.UserDTO, error)
 	Delete(id string) error
+	Select(id string) dtos.UserDTO
 }
 
 type userService struct {
@@ -32,4 +33,10 @@ func (u userService) Save(parameter dtos.UserDTO) (dtos.UserDTO, error)  {
 func (u userService) Delete(id string) error {
 	err := u.userRepository.Delete(id)
 	return err
+}
+
+func (u userService) Select(id string) dtos.UserDTO {
+	user := u.userRepository.FindById(id)
+	userDto := mapper.ToUserDto(user)
+	return userDto
 }
