@@ -48,16 +48,15 @@ func InitRoutes(server *gin.Engine) {
 			})
 		}
 
-
-
 	}
 }
 
 func initController() {
 	db := database.GetDB()
-	loginService := service.NewLoginService()
-	loginController = controller.NewLoginController(loginService)
 	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
 	userController = controller.NewUserController(userService)
+	loginService := service.NewLoginService(userRepository)
+	loginController = controller.NewLoginController(loginService)
+
 }

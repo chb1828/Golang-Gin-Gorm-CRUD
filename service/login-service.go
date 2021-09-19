@@ -4,6 +4,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"login/core/entity"
+	"login/core/repository"
 	"login/service/dtos"
 	"os"
 	"time"
@@ -22,10 +23,13 @@ type LoginService interface {
 
 type loginService struct {
 	token string
+	userRepository repository.UserRepository
 }
 
-func NewLoginService() LoginService {
-	return &loginService{}
+func NewLoginService(repository repository.UserRepository) LoginService {
+	return &loginService{
+		userRepository: repository,
+	}
 }
 func (service *loginService) CreateToken (dto dtos.LoginDTO) (string,error) {
 	var err error
