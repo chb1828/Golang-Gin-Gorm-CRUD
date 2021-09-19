@@ -9,7 +9,8 @@ import (
 type UserService interface {
 	Save(user dtos.UserDTO) (dtos.UserDTO, error)
 	Delete(id string) error
-	Select(id string) dtos.UserDTO
+	Select(id string) (dtos.UserDTO, error)
+	SelectAll() []dtos.UserDTO
 }
 
 type userService struct {
@@ -35,8 +36,14 @@ func (u userService) Delete(id string) error {
 	return err
 }
 
-func (u userService) Select(id string) dtos.UserDTO {
-	user := u.userRepository.FindById(id)
+func (u userService) Select(id string) (dtos.UserDTO, error) {
+	user, err := u.userRepository.FindById(id)
 	userDto := mapper.ToUserDto(user)
-	return userDto
+	return userDto, err
+}
+
+func (u userService) SelectAll() []dtos.UserDTO {
+	users := u.userRepository.FindAll()
+	userDtos := mapper.ToUserDtos(users)
+	return userDtos
 }

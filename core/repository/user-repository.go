@@ -13,7 +13,8 @@ type userRepository struct {
 type UserRepository interface {
 	Save(user entity.User)(entity.User, error)
 	Delete(id string) error
-	FindById(id string) entity.User
+	FindById(id string) (entity.User, error)
+	FindAll() []entity.User
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
@@ -34,9 +35,14 @@ func (u userRepository) Delete(id string) error {
 	return err
 }
 
-func (u userRepository) FindById(id string) entity.User {
-	var user entity.User
+func (u userRepository) FindById(id string) (user entity.User, err error) {
 	log.Println("[UserRepository]...FindById 호출")
-	u.DB.First(&user,id)
-	return user
+	err = u.DB.First(&user,id).Error
+	return user, err
+}
+
+func (u userRepository) FindAll() (users []entity.User) {
+	log.Println("[UserRepository]...FindAll 호출")
+	u.DB.Find(&users)
+	return users
 }

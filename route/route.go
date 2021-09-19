@@ -29,17 +29,26 @@ func InitRoutes(server *gin.Engine) {
 			loginController.Login(ctx)
 		})
 
-		apiRoutes.POST("/user",func(ctx *gin.Context) {
-			userController.AddUser(ctx)
-		})
+		userRoutes := apiRoutes.Group("/user")
+		{
+			userRoutes.POST("/",func(ctx *gin.Context) {
+				userController.AddUser(ctx)
+			})
 
-		apiRoutes.DELETE("/user",func(ctx *gin.Context) {
-			userController.RemoveUser(ctx)
-		})
+			userRoutes.DELETE("/",func(ctx *gin.Context) {
+				userController.RemoveUser(ctx)
+			})
 
-		apiRoutes.GET("/user/:id", func(ctx *gin.Context) {
-			userController.Select(ctx)
-		})
+			userRoutes.GET("/:id", func(ctx *gin.Context) {
+				userController.Select(ctx)
+			})
+
+			userRoutes.GET("/all", func(ctx *gin.Context) {
+				userController.SelectAll(ctx)
+			})
+		}
+
+
 
 	}
 }

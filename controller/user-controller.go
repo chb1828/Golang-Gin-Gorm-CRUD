@@ -11,6 +11,7 @@ type UserController interface {
 	AddUser(*gin.Context)
 	RemoveUser(ctx *gin.Context)
 	Select(ctx *gin.Context)
+	SelectAll(ctx *gin.Context)
 }
 
 type userController struct {
@@ -60,8 +61,18 @@ func (u userController) RemoveUser(ctx *gin.Context) {
 func (u userController) Select(ctx *gin.Context) {
 	id := ctx.Param("id")
 	if id=="" {
+		ctx.JSON(http.StatusBadRequest,gin.H{"error":"잘못된 요청입니다"})
 		return
 	}
-	user := u.userService.Select(id)
+	user, err := u.userService.Select(id)
+	if err !=nil {
+		ctx.JSON(http.StatusNotFound,gin.H{"error":"사용자를 찾을 수 없습니다"})
+		return
+	}
 	ctx.JSON(http.StatusOK,gin.H{"data":user})
+}
+
+func (u userController) SelectAll(ctx *gin.Context) {
+	users := u.userService.SelectAll()
+	ctx.JSON(http.StatusOK,gin.H{"data":users})
 }

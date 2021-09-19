@@ -26,3 +26,20 @@ func ToUserDto(user entity.User) dtos.UserDTO {
 	}
 	return userDto
 }
+
+func ToUserDtos(users []entity.User) []dtos.UserDTO {
+	var result []dtos.UserDTO
+	for _, value := range users {
+		userDto := dtos.UserDTO{
+			Id: value.ID,
+			Username: value.Username,
+			Password: string(value.Password),
+			Phone: value.Phone,
+			CreatedAt: value.CreatedAt,
+			UpdatedAt: value.UpdatedAt,
+			DeletedAt: value.DeletedAt,
+		}
+		result = append(result,userDto)
+	}
+	return result
+}
