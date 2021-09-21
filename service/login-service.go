@@ -3,18 +3,12 @@ package service
 import (
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
-	"login/core/entity"
 	"login/core/repository"
 	"login/service/dtos"
 	"os"
 	"time"
 )
 
-var user = entity.User{
-	Username: "admin",
-	Password: []byte("admin"),
-	Phone:    "49123454322",
-}
 
 type LoginService interface {
 	CreateToken(dto dtos.LoginDTO) (string,error)
@@ -51,7 +45,11 @@ func (service *loginService) CreateToken (dto dtos.LoginDTO) (string,error) {
 
 func (service *loginService) Check(dto dtos.LoginDTO) bool {
 	// 실제로 DB에 요청한 계정이 유효한지 검증한다
-	if user.Username != dto.Username || checkPasswordHash(user.Password,dto.Password) {
+	user,err := service.userRepository.FindByUsername(dto.Username)
+	if err != nil{
+		return false
+	}
+	if !checkPasswordHash(user.Password,dto.Password) {
 		return false
 	}
 	return true

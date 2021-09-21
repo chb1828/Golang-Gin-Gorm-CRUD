@@ -7,7 +7,7 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"size:255"`
+	Username string `gorm:"unique, size:255"`
 	Password []byte
 	Phone string `gorm:"type:varchar(100)"`
 }

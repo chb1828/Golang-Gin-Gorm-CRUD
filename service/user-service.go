@@ -42,6 +42,12 @@ func (u userService) Select(id string) (dtos.UserDTO, error) {
 	return userDto, err
 }
 
+func (u userService) SelectByUsername(username string) (dtos.UserDTO, error) {
+	user, err := u.userRepository.FindByUsername(username)
+	userDto := mapper.ToUserDto(user)
+	return userDto, err
+}
+
 func (u userService) SelectAll() []dtos.UserDTO {
 	users := u.userRepository.FindAll()
 	userDtos := mapper.ToUserDtos(users)

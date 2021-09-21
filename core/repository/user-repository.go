@@ -15,6 +15,7 @@ type UserRepository interface {
 	Delete(id string) error
 	FindById(id string) (entity.User, error)
 	FindAll() []entity.User
+	FindByUsername(username string) (user entity.User, err error)
 }
 
 func NewUserRepository(db *gorm.DB) UserRepository {
@@ -45,4 +46,9 @@ func (u userRepository) FindAll() (users []entity.User) {
 	log.Println("[UserRepository]...FindAll 호출")
 	u.DB.Find(&users)
 	return users
+}
+
+func (u userRepository) FindByUsername(username string) (user entity.User, err error) {
+	err = u.DB.Where("username = ?",username).First(&user).Error
+	return user,err
 }
