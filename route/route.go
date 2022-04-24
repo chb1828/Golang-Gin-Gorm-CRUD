@@ -6,13 +6,13 @@ import (
 	"login/controller"
 	"login/core/database"
 	"login/core/repository"
+	"login/module"
 	"login/service"
 )
 
 var (
 	loginController controller.LoginController
-	userController controller.UserController
-
+	userController  controller.UserController
 )
 
 func InitRoutes(server *gin.Engine) {
@@ -25,17 +25,17 @@ func InitRoutes(server *gin.Engine) {
 
 	apiRoutes := server.Group("/api")
 	{
-		apiRoutes.POST("/login",func(ctx *gin.Context) {
+		apiRoutes.POST("/login", func(ctx *gin.Context) {
 			loginController.Login(ctx)
 		})
 
 		userRoutes := apiRoutes.Group("/user")
 		{
-			userRoutes.POST("/",func(ctx *gin.Context) {
+			userRoutes.POST("/", func(ctx *gin.Context) {
 				userController.AddUser(ctx)
 			})
 
-			userRoutes.DELETE("/",func(ctx *gin.Context) {
+			userRoutes.DELETE("/", func(ctx *gin.Context) {
 				userController.RemoveUser(ctx)
 			})
 
@@ -53,9 +53,8 @@ func InitRoutes(server *gin.Engine) {
 
 func initController() {
 	db := database.GetDB()
+	userController = module.InitializeUserController(db)
 	userRepository := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepository)
-	userController = controller.NewUserController(userService)
 	loginService := service.NewLoginService(userRepository)
 	loginController = controller.NewLoginController(loginService)
 

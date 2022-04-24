@@ -11,17 +11,17 @@ type LoginController interface {
 	Login(ctx *gin.Context)
 }
 
-type loginController struct {
+type InLoginController struct {
 	loginService service.LoginService
 }
 
 func NewLoginController(service service.LoginService) LoginController {
-	return &loginController{
+	return &InLoginController{
 		service,
 	}
 }
 
-func (c *loginController) Login (ctx *gin.Context) {
+func (c *InLoginController) Login(ctx *gin.Context) {
 	var parameterDTO dtos.LoginDTO
 
 	// 들어온 json 형식을 검증한다
@@ -36,10 +36,9 @@ func (c *loginController) Login (ctx *gin.Context) {
 
 	token, err := c.loginService.CreateToken(parameterDTO)
 
-	if err !=nil {
+	if err != nil {
 		ctx.JSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
-	ctx.JSON(http.StatusOK,token)
+	ctx.JSON(http.StatusOK, token)
 }
-

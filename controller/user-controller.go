@@ -14,17 +14,17 @@ type UserController interface {
 	SelectAll(ctx *gin.Context)
 }
 
-type userController struct {
+type InUserController struct {
 	userService service.UserService
 }
 
 func NewUserController(service service.UserService) UserController {
-	return &userController{
+	return &InUserController{
 		service,
 	}
 }
 
-func (u userController) AddUser(ctx *gin.Context) {
+func (u InUserController) AddUser(ctx *gin.Context) {
 	var user dtos.UserDTO
 
 	// 들어온 json 형식을 검증한다
@@ -36,17 +36,17 @@ func (u userController) AddUser(ctx *gin.Context) {
 	resultUser, err := u.userService.Save(user)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error":"User를 저장하던 도중 에러가 발생했습니다."})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "User를 저장하던 도중 에러가 발생했습니다."})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated,gin.H{"data":resultUser})
+	ctx.JSON(http.StatusCreated, gin.H{"data": resultUser})
 
 }
 
-func (u userController) RemoveUser(ctx *gin.Context) {
+func (u InUserController) RemoveUser(ctx *gin.Context) {
 	id := ctx.PostForm("id")
-	if id =="" {
+	if id == "" {
 		return
 	}
 	err := u.userService.Delete(id)
@@ -55,24 +55,24 @@ func (u userController) RemoveUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "User를 삭제하던 도중 에러가 발생했습니다."})
 	}
 
-	ctx.JSON(http.StatusOK,gin.H{})
+	ctx.JSON(http.StatusOK, gin.H{})
 }
 
-func (u userController) Select(ctx *gin.Context) {
+func (u InUserController) Select(ctx *gin.Context) {
 	id := ctx.Param("id")
-	if id=="" {
-		ctx.JSON(http.StatusBadRequest,gin.H{"error":"잘못된 요청입니다"})
+	if id == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "잘못된 요청입니다"})
 		return
 	}
 	user, err := u.userService.Select(id)
-	if err !=nil {
-		ctx.JSON(http.StatusNotFound,gin.H{"error":"사용자를 찾을 수 없습니다"})
+	if err != nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "사용자를 찾을 수 없습니다"})
 		return
 	}
-	ctx.JSON(http.StatusOK,gin.H{"data":user})
+	ctx.JSON(http.StatusOK, gin.H{"data": user})
 }
 
-func (u userController) SelectAll(ctx *gin.Context) {
+func (u InUserController) SelectAll(ctx *gin.Context) {
 	users := u.userService.SelectAll()
-	ctx.JSON(http.StatusOK,gin.H{"data":users})
+	ctx.JSON(http.StatusOK, gin.H{"data": users})
 }
